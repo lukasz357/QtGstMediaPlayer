@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>899</width>
-    <height>484</height>
+    <width>960</width>
+    <height>467</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -41,12 +41,17 @@
        </property>
        <widget class="QWidget" name="tab">
         <attribute name="title">
-         <string>Tab 1</string>
+         <string>Library</string>
         </attribute>
+        <layout class="QGridLayout" name="gridLayout_3">
+         <item row="0" column="0">
+          <widget class="QTreeView" name="treeView"/>
+         </item>
+        </layout>
        </widget>
        <widget class="QWidget" name="tab_2">
         <attribute name="title">
-         <string>Tab 2</string>
+         <string>Playlists</string>
         </attribute>
        </widget>
       </widget>
@@ -74,7 +79,7 @@
             <rect>
              <x>9</x>
              <y>8</y>
-             <width>601</width>
+             <width>611</width>
              <height>29</height>
             </rect>
            </property>
@@ -131,7 +136,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>899</width>
+     <width>960</width>
      <height>25</height>
     </rect>
    </property>

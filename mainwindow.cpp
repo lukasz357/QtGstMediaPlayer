@@ -17,6 +17,10 @@ MainWindow::MainWindow(QWidget *parent) :
     //m_player = new Player(this);
     ui->setupUi(this);
     m_baseDir = QLatin1String(".");
+
+    dirmodel = new QFileSystemModel(this);
+    dirmodel->setRootPath(m_baseDir);
+    ui->treeView->setModel(dirmodel);
 }
 
 MainWindow::~MainWindow()

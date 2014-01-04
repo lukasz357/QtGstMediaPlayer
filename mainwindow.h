@@ -5,6 +5,7 @@
 #include <QTimer>
 #include <QWidget>
 #include <QStyle>
+#include <QFileSystemModel>
 
 class Player;
 
@@ -29,8 +30,8 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-    //Player *m_player;
     QString m_baseDir;
+    QFileSystemModel *dirmodel;
 
     void open();
     void openFile(const QString & fileName);
