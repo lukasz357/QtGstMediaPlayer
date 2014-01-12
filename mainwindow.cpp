@@ -58,7 +58,7 @@ void MainWindow::toggleFullScreen()
         ui->tabWidget->setVisible(true);
         ui->gridLayout_2->setMargin(5);
         ui->gridLayout->setMargin(5);
-        ui->horizontalLayout->setMargin(0);
+        //ui->horizontalLayout->setMargin(0);
         showNormal();
         ui->m_player->showNormal();
     } else {
@@ -69,9 +69,9 @@ void MainWindow::toggleFullScreen()
 //        ui->mainToolBar->setVisible(false);
 //        ui->statusBar->setVisible(false);
 
-        ui->gridLayout_2->setMargin(0);
+        ui->gridLayout_2->setContentsMargins(0,0,0,5);
         ui->gridLayout->setMargin(0);
-        ui->horizontalLayout->setContentsMargins(0,0,0,5);
+        //ui->horizontalLayout->setContentsMargins(0,0,0,5);
         showFullScreen();
         ui->m_player->showFullScreen();
 
