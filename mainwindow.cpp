@@ -21,6 +21,8 @@ MainWindow::MainWindow(QWidget *parent) :
     dirmodel = new QFileSystemModel(this);
     dirmodel->setRootPath(m_baseDir);
     ui->treeView->setModel(dirmodel);
+    ui->gridLayout_2->setMargin(5);
+    ui->gridLayout->setMargin(5);
 }
 
 MainWindow::~MainWindow()
@@ -53,12 +55,26 @@ void MainWindow::toggleFullScreen()
         ui->m_player->setMouseTracking(false);
 //        m_fullScreenTimer.stop();
 //        showControls();
+        ui->tabWidget->setVisible(true);
+        ui->gridLayout_2->setMargin(5);
+        ui->gridLayout->setMargin(5);
+        ui->horizontalLayout->setMargin(0);
         showNormal();
+        ui->m_player->showNormal();
     } else {
         setMouseTracking(true);
         ui->m_player->setMouseTracking(true);
 //        hideControls();
+        ui->tabWidget->setVisible(false);
+//        ui->mainToolBar->setVisible(false);
+//        ui->statusBar->setVisible(false);
+
+        ui->gridLayout_2->setMargin(0);
+        ui->gridLayout->setMargin(0);
+        ui->horizontalLayout->setContentsMargins(0,0,0,5);
         showFullScreen();
+        ui->m_player->showFullScreen();
+
     }
 }
 
