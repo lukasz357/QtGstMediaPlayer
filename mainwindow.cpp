@@ -7,14 +7,13 @@
 #include <QLabel>
 #include <QSlider>
 #include <QMouseEvent>
+#include <QTimer>
 
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
-    //create the player
-    //m_player = new Player(this);
     ui->setupUi(this);
     m_baseDir = QLatin1String(".");
 
@@ -23,12 +22,15 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->treeView->setModel(dirmodel);
     ui->gridLayout_2->setMargin(5);
     ui->gridLayout->setMargin(5);
+
+    //this timer (re-)hides the controls after a few seconds when we are in fullscreen mode
+    m_fullScreenTimer.setSingleShot(true);
+    connect(&m_fullScreenTimer, SIGNAL(timeout()), this, SLOT(hideControls()));
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
-    //delete m_player;
 }
 void MainWindow::openFile(const QString & fileName)
 {
@@ -52,30 +54,42 @@ void MainWindow::toggleFullScreen()
 {
     if (isFullScreen()) {
         setMouseTracking(false);
+        ui->centralWidget->setMouseTracking(false);
+        ui->splitter->setMouseTracking(false);
+        ui->widget_2->setMouseTracking(false);
         ui->m_player->setMouseTracking(false);
-//        m_fullScreenTimer.stop();
-//        showControls();
+        m_fullScreenTimer.stop();
+
         ui->tabWidget->setVisible(true);
         ui->gridLayout_2->setMargin(5);
         ui->gridLayout->setMargin(5);
-        //ui->horizontalLayout->setMargin(0);
+        showControls();
         showNormal();
         ui->m_player->showNormal();
     } else {
-        setMouseTracking(true);
-        ui->m_player->setMouseTracking(true);
-//        hideControls();
         ui->tabWidget->setVisible(false);
-//        ui->mainToolBar->setVisible(false);
-//        ui->statusBar->setVisible(false);
+        setMouseTracking(true);
+        ui->centralWidget->setMouseTracking(true);
+        ui->splitter->setMouseTracking(true);
+        ui->widget_2->setMouseTracking(true);
+        ui->m_player->setMouseTracking(true);
+        hideControls();
 
-        ui->gridLayout_2->setContentsMargins(0,0,0,5);
+        ui->gridLayout_2->setContentsMargins(0,0,0,0);
         ui->gridLayout->setMargin(0);
-        //ui->horizontalLayout->setContentsMargins(0,0,0,5);
+
         showFullScreen();
         ui->m_player->showFullScreen();
-
     }
+}
+
+void MainWindow::showControls(bool show)
+{
+    ui->widget->setVisible(show);
+    if(show)
+        ui->gridLayout_2->setContentsMargins(0,0,0,10);
+    else
+        ui->gridLayout_2->setContentsMargins(0,0,0,0);
 }
 
 void MainWindow::on_actionOpen_triggered()
@@ -91,4 +105,13 @@ void MainWindow::on_pushButton_clicked()
 void MainWindow::on_fullscreenButton_clicked()
 {
     toggleFullScreen();
+}
+
+void MainWindow::mouseMoveEvent(QMouseEvent *event)
+{
+    Q_UNUSED(event);
+    if (isFullScreen()) {
+        showControls();
+        m_fullScreenTimer.start(3000); //re-hide controls after 3s
+    }
 }
