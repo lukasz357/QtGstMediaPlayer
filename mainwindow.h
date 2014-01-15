@@ -29,6 +29,11 @@ private slots:
     void on_fullscreenButton_clicked();
     void hideControls() {showControls(false);}
 
+    void onStateChanged();
+    void onPositionChanged();
+
+    void setPosition(int position);
+
 private:
     Ui::MainWindow *ui;
     QString m_baseDir;

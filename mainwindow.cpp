@@ -23,9 +23,19 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->gridLayout_2->setMargin(5);
     ui->gridLayout->setMargin(5);
 
+    ui->m_positionSlider->setTickPosition(QSlider::TicksBelow);
+    ui->m_positionSlider->setTickInterval(10);
+    ui->m_positionSlider->setMaximum(1000);
+
+    connect(ui->m_positionSlider, SIGNAL(sliderMoved(int)), this, SLOT(setPosition(int)));
+    connect(ui->m_player, SIGNAL(positionChanged()), this, SLOT(onPositionChanged()));
+    connect(ui->m_player, SIGNAL(stateChanged()), this, SLOT(onStateChanged()));
+
     //this timer (re-)hides the controls after a few seconds when we are in fullscreen mode
     m_fullScreenTimer.setSingleShot(true);
     connect(&m_fullScreenTimer, SIGNAL(timeout()), this, SLOT(hideControls()));
+
+    onStateChanged();
 }
 
 MainWindow::~MainWindow()
@@ -86,6 +96,7 @@ void MainWindow::toggleFullScreen()
 void MainWindow::showControls(bool show)
 {
     ui->widget->setVisible(show);
+    ui->m_positionSlider->setVisible(show);
     if(show)
         ui->gridLayout_2->setContentsMargins(0,0,0,10);
     else
@@ -106,6 +117,65 @@ void MainWindow::on_fullscreenButton_clicked()
 {
     toggleFullScreen();
 }
+
+void MainWindow::onStateChanged()
+{
+    QGst::State newState = ui->m_player->state();
+//    m_playButton->setEnabled(newState != QGst::StatePlaying);
+//    m_pauseButton->setEnabled(newState == QGst::StatePlaying);
+//    m_stopButton->setEnabled(newState != QGst::StateNull);
+    ui->m_positionSlider->setEnabled(newState != QGst::StateNull);
+//    m_volumeSlider->setEnabled(newState != QGst::StateNull);
+//    m_volumeLabel->setEnabled(newState != QGst::StateNull);
+//    m_volumeSlider->setValue(m_player->volume());
+
+    //if we are in Null state, call onPositionChanged() to restore
+    //the position of the slider and the text on the label
+    if (newState == QGst::StateNull) {
+        onPositionChanged();
+    }
+}
+
+/* Called when the positionChanged() is received from the player */
+void MainWindow::onPositionChanged()
+{
+    QTime length(0,0);
+    QTime curpos(0,0);
+
+    if (ui->m_player->state() != QGst::StateReady &&
+        ui->m_player->state() != QGst::StateNull)
+    {
+        length = ui->m_player->length();
+        curpos = ui->m_player->position();
+    }
+
+//    m_positionLabel->setText(curpos.toString("hh:mm:ss.zzz")
+//                                        + "/" +
+//                             length.toString("hh:mm:ss.zzz"));
+
+    if (length != QTime(0,0)) {
+        ui->m_positionSlider->setValue(curpos.msecsTo(QTime(0,0)) * 1000 / length.msecsTo(QTime(0,0)));
+    } else {
+        ui->m_positionSlider->setValue(0);
+    }
+
+    if (curpos != QTime(0,0)) {
+//        m_positionLabel->setEnabled(true);
+        ui->m_positionSlider->setEnabled(true);
+    }
+}
+
+/* Called when the user changes the slider's position */
+void MainWindow::setPosition(int value)
+{
+    uint length = -ui->m_player->length().msecsTo(QTime(0,0));
+    if (length != 0 && value > 0) {
+        QTime pos(0,0);
+        pos = pos.addMSecs(length * (value / 1000.0));
+        ui->m_player->setPosition(pos);
+    }
+}
+
 
 void MainWindow::mouseMoveEvent(QMouseEvent *event)
 {
