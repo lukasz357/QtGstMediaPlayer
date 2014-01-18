@@ -24,9 +24,7 @@ public:
 private slots:
     void on_actionOpen_triggered();
 
-    void on_pushButton_clicked();
-
-    void on_fullscreenButton_clicked();
+    void on_m_fullscreenButton_clicked();
     void hideControls() {showControls(false);}
 
     void onStateChanged();

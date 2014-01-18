@@ -15,6 +15,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    ui->m_pauseButton->setVisible(false);
     m_baseDir = QLatin1String(".");
 
     dirmodel = new QFileSystemModel(this);
@@ -27,9 +29,18 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->m_positionSlider->setTickInterval(10);
     ui->m_positionSlider->setMaximum(1000);
 
+    ui->m_volumeSlider->setTickPosition(QSlider::TicksLeft);
+    ui->m_volumeSlider->setTickInterval(2);
+    ui->m_volumeSlider->setMaximum(10);
+    ui->m_volumeSlider->setMaximumSize(64,32);
+
     connect(ui->m_positionSlider, SIGNAL(sliderMoved(int)), this, SLOT(setPosition(int)));
     connect(ui->m_player, SIGNAL(positionChanged()), this, SLOT(onPositionChanged()));
     connect(ui->m_player, SIGNAL(stateChanged()), this, SLOT(onStateChanged()));
+
+    connect(ui->m_playButton, SIGNAL(clicked()), ui->m_player, SLOT(play()));
+    connect(ui->m_pauseButton, SIGNAL(clicked()), ui->m_player, SLOT(pause()));
+    connect(ui->m_stopButton, SIGNAL(clicked()), ui->m_player, SLOT(stop()));
 
     //this timer (re-)hides the controls after a few seconds when we are in fullscreen mode
     m_fullScreenTimer.setSingleShot(true);
@@ -108,12 +119,7 @@ void MainWindow::on_actionOpen_triggered()
     open();
 }
 
-void MainWindow::on_pushButton_clicked()
-{
-
-}
-
-void MainWindow::on_fullscreenButton_clicked()
+void MainWindow::on_m_fullscreenButton_clicked()
 {
     toggleFullScreen();
 }
@@ -121,13 +127,15 @@ void MainWindow::on_fullscreenButton_clicked()
 void MainWindow::onStateChanged()
 {
     QGst::State newState = ui->m_player->state();
-//    m_playButton->setEnabled(newState != QGst::StatePlaying);
-//    m_pauseButton->setEnabled(newState == QGst::StatePlaying);
-//    m_stopButton->setEnabled(newState != QGst::StateNull);
+    ui->m_playButton->setEnabled(newState != QGst::StatePlaying);
+    ui->m_playButton->setVisible(ui->m_playButton->isEnabled());
+    ui->m_pauseButton->setEnabled(newState == QGst::StatePlaying);
+    ui->m_pauseButton->setVisible(ui->m_pauseButton->isEnabled());
+    ui->m_stopButton->setEnabled(newState != QGst::StateNull);
     ui->m_positionSlider->setEnabled(newState != QGst::StateNull);
-//    m_volumeSlider->setEnabled(newState != QGst::StateNull);
+    ui->m_volumeSlider->setEnabled(newState != QGst::StateNull);
 //    m_volumeLabel->setEnabled(newState != QGst::StateNull);
-//    m_volumeSlider->setValue(m_player->volume());
+    ui->m_volumeSlider->setValue(ui->m_player->volume());
 
     //if we are in Null state, call onPositionChanged() to restore
     //the position of the slider and the text on the label
