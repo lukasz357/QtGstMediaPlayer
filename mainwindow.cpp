@@ -17,11 +17,14 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     ui->m_pauseButton->setVisible(false);
-    m_baseDir = QLatin1String(".");
+    m_baseDir = QLatin1String("/home/lukasz");
 
     dirmodel = new QFileSystemModel(this);
     dirmodel->setRootPath(m_baseDir);
     ui->treeView->setModel(dirmodel);
+    ui->treeView->setRootIndex(dirmodel->index(QDir::homePath()));
+
+
     ui->gridLayout_2->setMargin(5);
     ui->gridLayout->setMargin(5);
 
