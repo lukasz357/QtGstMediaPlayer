@@ -42,11 +42,15 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->m_pauseButton, SIGNAL(clicked()), ui->m_player, SLOT(pause()));
     connect(ui->m_stopButton, SIGNAL(clicked()), ui->m_player, SLOT(stop()));
 
+    connect(ui->m_volumeSlider, SIGNAL(sliderMoved(int)), ui->m_player, SLOT(setVolume(int)));
+
     //this timer (re-)hides the controls after a few seconds when we are in fullscreen mode
     m_fullScreenTimer.setSingleShot(true);
     connect(&m_fullScreenTimer, SIGNAL(timeout()), this, SLOT(hideControls()));
 
     onStateChanged();
+
+    setWindowTitle("QtGstMediaPlayer");
 }
 
 MainWindow::~MainWindow()
