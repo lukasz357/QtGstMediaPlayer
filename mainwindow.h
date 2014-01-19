@@ -35,7 +35,7 @@ private slots:
 private:
     Ui::MainWindow *ui;
     QString m_baseDir;
-    QFileSystemModel *dirmodel;
+    QFileSystemModel *fileSystemModel;
     QTimer m_fullScreenTimer;
 
     void open();

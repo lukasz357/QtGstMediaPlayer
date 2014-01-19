@@ -17,12 +17,18 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     ui->m_pauseButton->setVisible(false);
-    m_baseDir = QLatin1String("/home/lukasz");
+    m_baseDir = QLatin1String("/home");
 
-    dirmodel = new QFileSystemModel(this);
-    dirmodel->setRootPath(m_baseDir);
-    ui->treeView->setModel(dirmodel);
-    ui->treeView->setRootIndex(dirmodel->index(QDir::homePath()));
+    fileSystemModel = new QFileSystemModel(this);
+    fileSystemModel->setRootPath(m_baseDir);
+
+    QStringList sDriveFilters;
+    sDriveFilters << "*.aac" << "*.wmv" << "*.avi" << "*.mpeg" << "*.mov" << "*.3gp" << "*.flv" << "*.mp3" << "*.mp4" ;
+
+    fileSystemModel->setNameFilters(sDriveFilters);
+    fileSystemModel->setNameFilterDisables(false);
+    ui->treeView->setModel(fileSystemModel);
+    ui->treeView->setRootIndex(fileSystemModel->index(m_baseDir));
 
 
     ui->gridLayout_2->setMargin(5);
