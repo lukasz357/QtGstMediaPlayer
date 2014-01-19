@@ -107,7 +107,7 @@ void MainWindow::toggleFullScreen()
 void MainWindow::showControls(bool show)
 {
     ui->widget->setVisible(show);
-    ui->m_positionSlider->setVisible(show);
+    ui->widget_6->setVisible(show);
     if(show)
         ui->gridLayout_2->setContentsMargins(0,0,0,10);
     else
@@ -157,9 +157,8 @@ void MainWindow::onPositionChanged()
         curpos = ui->m_player->position();
     }
 
-//    m_positionLabel->setText(curpos.toString("hh:mm:ss.zzz")
-//                                        + "/" +
-//                             length.toString("hh:mm:ss.zzz"));
+    ui->m_positionLabel->setText(curpos.toString("hh:mm:ss"));
+    ui->m_fullLengthLabel->setText(length.toString("hh:mm:ss"));
 
     if (length != QTime(0,0)) {
         ui->m_positionSlider->setValue(curpos.msecsTo(QTime(0,0)) * 1000 / length.msecsTo(QTime(0,0)));
@@ -168,7 +167,7 @@ void MainWindow::onPositionChanged()
     }
 
     if (curpos != QTime(0,0)) {
-//        m_positionLabel->setEnabled(true);
+        ui->m_positionLabel->setEnabled(true);
         ui->m_positionSlider->setEnabled(true);
     }
 }
