@@ -33,3 +33,4 @@ HEADERS  += mainwindow.h \
             player.h
 
 FORMS    += mainwindow.ui
+message($$OUT_PWD)

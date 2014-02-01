@@ -31,6 +31,7 @@ private slots:
     void onPositionChanged();
 
     void setPosition(int position);
+    void slotCustomContextMenu(const QPoint &point);
 
 private:
     Ui::MainWindow *ui;

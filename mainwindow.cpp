@@ -8,7 +8,7 @@
 #include <QSlider>
 #include <QMouseEvent>
 #include <QTimer>
-
+#include <QStandardItem>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -30,6 +30,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->treeView->setModel(fileSystemModel);
     ui->treeView->setRootIndex(fileSystemModel->index(m_baseDir));
 
+    connect(ui->treeView, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(slotCustomContextMenu(const QPoint &)));
 
     ui->gridLayout_2->setMargin(5);
     ui->gridLayout->setMargin(5);
@@ -56,6 +57,32 @@ MainWindow::MainWindow(QWidget *parent) :
     //this timer (re-)hides the controls after a few seconds when we are in fullscreen mode
     m_fullScreenTimer.setSingleShot(true);
     connect(&m_fullScreenTimer, SIGNAL(timeout()), this, SLOT(hideControls()));
+
+
+    ui->m_playButton->setIcon(QIcon("../QtGstMediaPlayer/icons/play.png"));
+    ui->m_playButton->setIconSize(QSize(32,32));
+
+    ui->m_pauseButton->setIcon(QIcon("../QtGstMediaPlayer/icons/pause.png"));
+    ui->m_pauseButton->setIconSize(QSize(32,32));
+
+    ui->m_stopButton->setIcon(QIcon("../QtGstMediaPlayer/icons/stop.png"));
+    ui->m_stopButton->setIconSize(QSize(32,32));
+
+    ui->m_fullscreenButton->setIcon(QIcon("../QtGstMediaPlayer/icons/fullscreen.png"));
+
+    ui->m_previousButton->setIcon(QIcon("../QtGstMediaPlayer/icons/previous.png"));
+    ui->m_previousButton->setIconSize(QSize(32,32));
+
+    ui->m_nextButton->setIcon(QIcon("../QtGstMediaPlayer/icons/next.png"));
+    ui->m_nextButton->setIconSize(QSize(32,32));
+
+    ui->m_volumeButton->setIcon(QIcon("../QtGstMediaPlayer/icons/audio_mid.png"));
+
+    ui->m_increaseRateButton->setIcon(QIcon("../QtGstMediaPlayer/icons/increase.png"));
+
+
+    ui->m_decreaseRateButton->setIcon(QIcon("../QtGstMediaPlayer/icons/decrease.png"));
+
 
     onStateChanged();
 
@@ -95,13 +122,18 @@ void MainWindow::toggleFullScreen()
         m_fullScreenTimer.stop();
 
         ui->tabWidget->setVisible(true);
+        ui->m_statusbar->setVisible(true);
+
         ui->gridLayout_2->setMargin(5);
         ui->gridLayout->setMargin(5);
         showControls();
         showNormal();
         ui->m_player->showNormal();
+        ui->m_fullscreenButton->setIcon(QIcon("../QtGstMediaPlayer/icons/fullscreen.png"));
     } else {
         ui->tabWidget->setVisible(false);
+        ui->m_statusbar->setVisible(false);
+
         setMouseTracking(true);
         ui->centralWidget->setMouseTracking(true);
         ui->splitter->setMouseTracking(true);
@@ -114,6 +146,7 @@ void MainWindow::toggleFullScreen()
 
         showFullScreen();
         ui->m_player->showFullScreen();
+        ui->m_fullscreenButton->setIcon(QIcon("../QtGstMediaPlayer/icons/restore_fullscreen.png"));
     }
 }
 
@@ -185,6 +218,11 @@ void MainWindow::onPositionChanged()
     }
 }
 
+//void MainWindow::onVolumeChanged()
+//{
+
+//}
+
 /* Called when the user changes the slider's position */
 void MainWindow::setPosition(int value)
 {
@@ -204,4 +242,16 @@ void MainWindow::mouseMoveEvent(QMouseEvent *event)
         showControls();
         m_fullScreenTimer.start(3000); //re-hide controls after 3s
     }
+}
+
+void MainWindow::slotCustomContextMenu(const QPoint &point)
+{
+    //QStandardItem *item = ui->treeView->model()->itemData()->itemFromIndex(indexAt(point));
+
+//    if(item && item->data(Qt::UserRole+1).toString() == "Category"){
+//        QMenu *menu = new QMenu;
+//        menu->addAction(QString("Import"), menu, SLOT(slotImport()));
+//        menu->addAction(QString("Export"), menu, SLOT(slotExport()));
+//        menu->exec(QCursor::pos());
+//    }
 }

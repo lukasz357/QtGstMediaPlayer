@@ -95,7 +95,7 @@
           <property name="maximumSize">
            <size>
             <width>16777215</width>
-            <height>30</height>
+            <height>32</height>
            </size>
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout">
@@ -129,6 +129,25 @@
               <property name="spacing">
                <number>0</number>
               </property>
+              <item row="1" column="5">
+               <widget class="QPushButton" name="m_nextButton">
+                <property name="minimumSize">
+                 <size>
+                  <width>32</width>
+                  <height>32</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>32</width>
+                  <height>32</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
               <item row="1" column="1">
                <widget class="QPushButton" name="m_playButton">
                 <property name="sizePolicy">
@@ -139,53 +158,90 @@
                 </property>
                 <property name="minimumSize">
                  <size>
-                  <width>60</width>
-                  <height>30</height>
+                  <width>32</width>
+                  <height>32</height>
                  </size>
                 </property>
                 <property name="maximumSize">
                  <size>
-                  <width>100</width>
-                  <height>30</height>
+                  <width>32</width>
+                  <height>32</height>
                  </size>
                 </property>
                 <property name="text">
-                 <string>Play</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="3">
-               <widget class="QPushButton" name="m_stopButton">
-                <property name="minimumSize">
-                 <size>
-                  <width>60</width>
-                  <height>30</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>100</width>
-                  <height>30</height>
-                 </size>
-                </property>
-                <property name="text">
-                 <string>Stop</string>
+                 <string/>
                 </property>
                </widget>
               </item>
               <item row="1" column="4">
-               <widget class="QWidget" name="widget_5" native="true"/>
+               <widget class="QPushButton" name="m_stopButton">
+                <property name="minimumSize">
+                 <size>
+                  <width>32</width>
+                  <height>32</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>32</width>
+                  <height>32</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="6">
+               <widget class="QWidget" name="widget_5" native="true">
+                <zorder>widget_4</zorder>
+               </widget>
               </item>
               <item row="1" column="0">
                <widget class="QPushButton" name="m_pauseButton">
                 <property name="maximumSize">
                  <size>
-                  <width>100</width>
-                  <height>30</height>
+                  <width>32</width>
+                  <height>32</height>
                  </size>
                 </property>
                 <property name="text">
-                 <string>Pause</string>
+                 <string/>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="3">
+               <widget class="QPushButton" name="m_previousButton">
+                <property name="minimumSize">
+                 <size>
+                  <width>32</width>
+                  <height>32</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>32</width>
+                  <height>32</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="2">
+               <widget class="QWidget" name="widget_7" native="true">
+                <property name="minimumSize">
+                 <size>
+                  <width>5</width>
+                  <height>32</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>5</width>
+                  <height>32</height>
+                 </size>
                 </property>
                </widget>
               </item>
@@ -193,67 +249,139 @@
             </widget>
            </item>
            <item>
-            <widget class="QWidget" name="widget_4" native="true">
+            <widget class="QPushButton" name="m_decreaseRateButton">
+             <property name="minimumSize">
+              <size>
+               <width>32</width>
+               <height>32</height>
+              </size>
+             </property>
              <property name="maximumSize">
               <size>
-               <width>300</width>
-               <height>30</height>
+               <width>32</width>
+               <height>32</height>
+              </size>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="m_increaseRateButton">
+             <property name="minimumSize">
+              <size>
+               <width>32</width>
+               <height>32</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>32</width>
+               <height>32</height>
+              </size>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="m_volumeButton">
+             <property name="minimumSize">
+              <size>
+               <width>32</width>
+               <height>32</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>32</width>
+               <height>32</height>
               </size>
              </property>
              <property name="layoutDirection">
               <enum>Qt::LeftToRight</enum>
              </property>
-             <widget class="QPushButton" name="m_fullscreenButton">
-              <property name="geometry">
-               <rect>
-                <x>200</x>
-                <y>0</y>
-                <width>100</width>
-                <height>30</height>
-               </rect>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>100</width>
-                <height>30</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>100</width>
-                <height>30</height>
-               </size>
-              </property>
-              <property name="layoutDirection">
-               <enum>Qt::RightToLeft</enum>
-              </property>
-              <property name="text">
-               <string>Fullscreen</string>
-              </property>
-             </widget>
+             <property name="text">
+              <string/>
+             </property>
+             <property name="iconSize">
+              <size>
+               <width>20</width>
+               <height>20</height>
+              </size>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QWidget" name="widget_4" native="true">
+             <property name="maximumSize">
+              <size>
+               <width>300</width>
+               <height>32</height>
+              </size>
+             </property>
+             <property name="layoutDirection">
+              <enum>Qt::LeftToRight</enum>
+             </property>
              <widget class="QSlider" name="m_volumeSlider">
               <property name="geometry">
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>200</width>
-                <height>30</height>
+                <width>220</width>
+                <height>32</height>
                </rect>
               </property>
               <property name="minimumSize">
                <size>
-                <width>200</width>
-                <height>30</height>
+                <width>220</width>
+                <height>32</height>
                </size>
               </property>
               <property name="maximumSize">
                <size>
-                <width>200</width>
-                <height>30</height>
+                <width>220</width>
+                <height>32</height>
                </size>
               </property>
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
+              </property>
+             </widget>
+             <widget class="QPushButton" name="m_fullscreenButton">
+              <property name="geometry">
+               <rect>
+                <x>220</x>
+                <y>0</y>
+                <width>32</width>
+                <height>32</height>
+               </rect>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>32</width>
+                <height>32</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>32</width>
+                <height>32</height>
+               </size>
+              </property>
+              <property name="layoutDirection">
+               <enum>Qt::LeftToRight</enum>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
               </property>
              </widget>
             </widget>
@@ -295,6 +423,41 @@
          </widget>
         </item>
        </layout>
+      </widget>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QFrame" name="m_statusbar">
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>24</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>24</height>
+       </size>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::NoFrame</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QLabel" name="label">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>0</y>
+         <width>191</width>
+         <height>17</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>MP3 | 128kbps | 44100Hz</string>
+       </property>
       </widget>
      </widget>
     </item>
