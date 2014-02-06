@@ -32,6 +32,7 @@ private slots:
 
     void setPosition(int position);
     void slotCustomContextMenu(const QPoint &point);
+    void onMetaChanged();
 
 private:
     Ui::MainWindow *ui;

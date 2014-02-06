@@ -30,6 +30,11 @@
 #include <QGst/ClockTime>
 #include <QGst/Event>
 #include <QGst/StreamVolume>
+#include <QGst/Buffer>
+#include <QGst/TagList>
+
+#include <QTextCodec>
+
 
 Player::Player(QWidget *parent)
     : QGst::Ui::VideoWidget(parent)
@@ -46,6 +51,21 @@ Player::~Player()
         stopPipelineWatch();
     }
 }
+
+QString strToUnicode(QString str)
+{
+    QString trimmedStr = str;
+    trimmedStr.replace(" ", "");
+    bool isUnicode = trimmedStr.toLatin1().contains("??");
+
+    if(!isUnicode) {
+        QTextCodec * codec = QTextCodec::codecForName("windows-1251");
+        return codec->toUnicode(str.toLatin1());
+    } else {
+        return str;
+    }
+}
+
 
 void Player::setUri(const QString & uri)
 {
@@ -65,6 +85,7 @@ void Player::setUri(const QString & uri)
             //watch the bus for messages
             QGst::BusPtr bus = m_pipeline->bus();
             bus->addSignalWatch();
+            qDebug() << "I'm connecting onBusMessage to bus";
             QGlib::connect(bus, "message", this, &Player::onBusMessage);
         } else {
             qCritical() << "Failed to create the pipeline";
@@ -74,6 +95,8 @@ void Player::setUri(const QString & uri)
     if (m_pipeline) {
         m_pipeline->setProperty("uri", realUri);
     }
+
+    m_Meta.clear();
 }
 
 QTime Player::position() const
@@ -186,6 +209,9 @@ void Player::onBusMessage(const QGst::MessagePtr & message)
             handlePipelineStateChange(message.staticCast<QGst::StateChangedMessage>());
         }
         break;
+    case QGst::MessageTag:
+        handleTag(message.staticCast<QGst::TagMessage>());
+        break;
     default:
         break;
     }
@@ -211,4 +237,46 @@ void Player::handlePipelineStateChange(const QGst::StateChangedMessagePtr & scm)
     Q_EMIT stateChanged();
 }
 
+void Player::handleTag(const QGst::TagMessagePtr &scm)
+{
+    QGst::TagList list = scm->taglist();
+
+    quint32 brate = list.bitrate();
+    if(brate > 0)
+        Q_EMIT gotBitrate(brate);
+
+    if(!list.artist().isEmpty()) {
+        m_Meta["artist"] = strToUnicode(list.artist());
+        qDebug() << "Artist: " << m_Meta["artist"];
+    }
+
+    if(!list.title().isEmpty()) {
+        m_Meta["title"] = strToUnicode(list.title());
+        qDebug() <<  "Title: " << m_Meta["title"];
+    }
+
+    if(!list.genre().isEmpty()) {
+        m_Meta["genre"] = strToUnicode(list.genre());
+        qDebug() << "Genre: " << m_Meta["genre"];
+    }
+
+    if(list.maximumBitrate() > 0) {
+        m_Meta["brate"] = QString::number(list.maximumBitrate() / 1000);
+        qDebug() << "Brate: " << m_Meta["brate"];
+    }
+
+    if(list.tagValueCount("album") > 0) {
+        m_Meta["album"] = strToUnicode(list.tagValue("album").toString());
+        qDebug() << "Album: " << m_Meta["album"];
+    }
+
+    Q_EMIT metaChanged();
+
+
+}
+
+QMap<QString, QString> Player::meta()
+{
+    return m_Meta;
+}
 #include "moc_player.cpp"

@@ -2,6 +2,7 @@
 #define PLAYER_H
 #include <QTimer>
 #include <QTime>
+#include <QMap>
 #include <QGst/Pipeline>
 #include <QGst/Ui/VideoWidget>
 
@@ -27,16 +28,22 @@ public Q_SLOTS:
     void stop();
     void setVolume(int volume);
 
+    QMap<QString, QString> meta();
+
 Q_SIGNALS:
     void positionChanged();
     void stateChanged();
+    void gotBitrate(quint32);
+    void metaChanged();
 
 private:
     void onBusMessage(const QGst::MessagePtr & message);
     void handlePipelineStateChange(const QGst::StateChangedMessagePtr & scm);
+    void handleTag(const QGst::TagMessagePtr &scm);
 
     QGst::PipelinePtr m_pipeline;
     QTimer m_positionTimer;
+    QMap<QString, QString> m_Meta;
 };
 
 #endif // PLAYER_H

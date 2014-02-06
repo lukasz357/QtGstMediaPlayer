@@ -9,6 +9,11 @@
 #include <QMouseEvent>
 #include <QTimer>
 #include <QStandardItem>
+#include <QStringList>
+#include <QStringListModel>
+#include <QAbstractItemView>
+#include <QDebug>
+#include <stddef.h>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -17,7 +22,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     ui->m_pauseButton->setVisible(false);
-    m_baseDir = QLatin1String("/home");
+    m_baseDir = QLatin1String("/home/lukasz/Music");
 
     fileSystemModel = new QFileSystemModel(this);
     fileSystemModel->setRootPath(m_baseDir);
@@ -27,6 +32,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     fileSystemModel->setNameFilters(sDriveFilters);
     fileSystemModel->setNameFilterDisables(false);
+
     ui->treeView->setModel(fileSystemModel);
     ui->treeView->setRootIndex(fileSystemModel->index(m_baseDir));
 
@@ -47,6 +53,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->m_positionSlider, SIGNAL(sliderMoved(int)), this, SLOT(setPosition(int)));
     connect(ui->m_player, SIGNAL(positionChanged()), this, SLOT(onPositionChanged()));
     connect(ui->m_player, SIGNAL(stateChanged()), this, SLOT(onStateChanged()));
+    connect(ui->m_player, SIGNAL(metaChanged()), this, SLOT(onMetaChanged()));
 
     connect(ui->m_playButton, SIGNAL(clicked()), ui->m_player, SLOT(play()));
     connect(ui->m_pauseButton, SIGNAL(clicked()), ui->m_player, SLOT(pause()));
@@ -83,6 +90,40 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->m_decreaseRateButton->setIcon(QIcon("../QtGstMediaPlayer/icons/decrease.png"));
 
+    ui->m_addToPlayListButton->setIcon(QIcon("../QtGstMediaPlayer/icons/plus.png"));
+//    ui->m_addToPlayListButton->setIconSize(QSize(32,32));
+
+    ui->m_removeFromPlaylist->setIcon(QIcon("../QtGstMediaPlayer/icons/minus.png"));
+//    ui->m_removeFromPlaylist->setIconSize(QSize(32,32));
+
+    ui->m_moveUpInPlaylist->setIcon(QIcon("../QtGstMediaPlayer/icons/up.png"));
+//    ui->m_moveUpInPlaylist->setIconSize(QSize(32,32));
+
+    ui->m_moveDownInPlaylist->setIcon(QIcon("../QtGstMediaPlayer/icons/down.png"));
+//    ui->m_moveDownInPlaylist->setIconSize(QSize(32,32));
+
+
+    //TEMPORARY
+    QStringListModel *playListModel = new QStringListModel(this);
+    QStringList List;
+        List << "1.  Right Next Door To Hell"
+             << "2.  Dust 'N' Bones"
+             << "3.  Live And Let Die"
+             << "4.  Don't Cry"
+             << "5.  Perfect Crime"
+             << "6.  You Ain't The First"
+             << "7.  Bad Obsession"
+             << "8.  Back Off Bitch"
+             << "9.  Double Talkin' Jive"
+             << "10. November Rain"
+             << "11. The Garden"
+             << "12. Garden Of Eden"
+             << "13. Don't Damn Me"
+             << "14. Bad Apples"
+             << "15. Dead Horse"
+             << "16. Coma";
+    playListModel->setStringList(List);
+    ui->m_playListView->setModel(playListModel);
 
     onStateChanged();
 
@@ -104,10 +145,11 @@ void MainWindow::openFile(const QString & fileName)
 
 void MainWindow::open()
 {
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open a Movie"), m_baseDir);
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Select a file"), m_baseDir);
 
     if (!fileName.isEmpty()) {
         openFile(fileName);
+        ui->m_filetypeLabel->setText(fileName.right(3).toUpper());
     }
 }
 
@@ -205,6 +247,7 @@ void MainWindow::onPositionChanged()
 
     ui->m_positionLabel->setText(curpos.toString("hh:mm:ss"));
     ui->m_fullLengthLabel->setText(length.toString("hh:mm:ss"));
+    ui->m_lengthLabel->setText(length.toString("hh:mm:ss"));
 
     if (length != QTime(0,0)) {
         ui->m_positionSlider->setValue(curpos.msecsTo(QTime(0,0)) * 1000 / length.msecsTo(QTime(0,0)));
@@ -215,6 +258,15 @@ void MainWindow::onPositionChanged()
     if (curpos != QTime(0,0)) {
         ui->m_positionLabel->setEnabled(true);
         ui->m_positionSlider->setEnabled(true);
+    }
+}
+
+void MainWindow::onMetaChanged()
+{
+    QString lbl = ui->m_player->meta().value("brate");
+    lbl.append(" kbps");
+    if(lbl != NULL) {
+        ui->m_bitrateLabel->setText(lbl);
     }
 }
 
