@@ -54,12 +54,14 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->m_player, SIGNAL(positionChanged()), this, SLOT(onPositionChanged()));
     connect(ui->m_player, SIGNAL(stateChanged()), this, SLOT(onStateChanged()));
     connect(ui->m_player, SIGNAL(metaChanged()), this, SLOT(onMetaChanged()));
+    connect(ui->m_player, SIGNAL(volumeToggled()), this, SLOT(onVolumeToggled()));
 
     connect(ui->m_playButton, SIGNAL(clicked()), ui->m_player, SLOT(play()));
     connect(ui->m_pauseButton, SIGNAL(clicked()), ui->m_player, SLOT(pause()));
     connect(ui->m_stopButton, SIGNAL(clicked()), ui->m_player, SLOT(stop()));
 
     connect(ui->m_volumeSlider, SIGNAL(sliderMoved(int)), ui->m_player, SLOT(setVolume(int)));
+    connect(ui->m_volumeButton, SIGNAL(clicked()), ui->m_player, SLOT(toggleVolume()));
 
     //this timer (re-)hides the controls after a few seconds when we are in fullscreen mode
     m_fullScreenTimer.setSingleShot(true);
@@ -222,7 +224,7 @@ void MainWindow::onStateChanged()
     ui->m_stopButton->setEnabled(newState != QGst::StateNull);
     ui->m_positionSlider->setEnabled(newState != QGst::StateNull);
     ui->m_volumeSlider->setEnabled(newState != QGst::StateNull);
-//    m_volumeLabel->setEnabled(newState != QGst::StateNull);
+    ui->m_volumeButton->setEnabled(newState != QGst::StateNull);
     ui->m_volumeSlider->setValue(ui->m_player->volume());
 
     //if we are in Null state, call onPositionChanged() to restore
@@ -270,10 +272,10 @@ void MainWindow::onMetaChanged()
     }
 }
 
-//void MainWindow::onVolumeChanged()
-//{
-
-//}
+void MainWindow::onVolumeToggled()
+{
+    ui->m_volumeSlider->setValue(ui->m_player->volume());
+}
 
 /* Called when the user changes the slider's position */
 void MainWindow::setPosition(int value)

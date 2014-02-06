@@ -150,6 +150,20 @@ void Player::setVolume(int volume)
     }
 }
 
+void Player::toggleVolume()
+{
+    if(m_pipeline) {
+        int volume = this->volume();
+        if(volume > 0) {
+            m_previousVolumeValue = volume;
+            setVolume(0);
+        } else {
+            setVolume(m_previousVolumeValue);
+        }
+    }
+    Q_EMIT volumeToggled();
+}
+
 QTime Player::length() const
 {
     if (m_pipeline) {

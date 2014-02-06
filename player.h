@@ -27,6 +27,7 @@ public Q_SLOTS:
     void pause();
     void stop();
     void setVolume(int volume);
+    void toggleVolume();
 
     QMap<QString, QString> meta();
 
@@ -35,6 +36,7 @@ Q_SIGNALS:
     void stateChanged();
     void gotBitrate(quint32);
     void metaChanged();
+    void volumeToggled();
 
 private:
     void onBusMessage(const QGst::MessagePtr & message);
@@ -44,6 +46,7 @@ private:
     QGst::PipelinePtr m_pipeline;
     QTimer m_positionTimer;
     QMap<QString, QString> m_Meta;
+    int m_previousVolumeValue;
 };
 
 #endif // PLAYER_H
