@@ -17,6 +17,7 @@ public:
     void addElement(QFileInfo qfi);
 
     PlayListElement getElement(int idx);
+    QHash<QString, PlayListElement> getMap();
     
 signals:
     

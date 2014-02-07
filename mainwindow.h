@@ -38,6 +38,8 @@ private slots:
     void showContextMenu(const QPoint &);
     void addMediaFilesToLibrary();
     void playSelectedFile(QModelIndex);
+    void playNextFile();
+    void playPreviousFile();
 
 private:
     Ui::MainWindow *ui;
@@ -46,6 +48,8 @@ private:
     QFileInfoList *fileInfoList;
     QTimer m_fullScreenTimer;
     PlayListModel *m_playListModel;
+
+    int m_playingFileidx;
 
     void open();
     void openFile(const QString & fileName);

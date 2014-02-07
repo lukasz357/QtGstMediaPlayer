@@ -68,6 +68,9 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->m_volumeSlider, SIGNAL(sliderMoved(int)), ui->m_player, SLOT(setVolume(int)));
     connect(ui->m_volumeButton, SIGNAL(clicked()), ui->m_player, SLOT(toggleVolume()));
 
+    connect(ui->m_nextButton, SIGNAL(clicked()), this, SLOT(playNextFile()));
+    connect(ui->m_previousButton, SIGNAL(clicked()), this, SLOT(playPreviousFile()));
+
     //this timer (re-)hides the controls after a few seconds when we are in fullscreen mode
     m_fullScreenTimer.setSingleShot(true);
     connect(&m_fullScreenTimer, SIGNAL(timeout()), this, SLOT(hideControls()));
@@ -98,16 +101,14 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->m_decreaseRateButton->setIcon(QIcon("../QtGstMediaPlayer/icons/decrease.png"));
 
     ui->m_addToPlayListButton->setIcon(QIcon("../QtGstMediaPlayer/icons/plus.png"));
-//    ui->m_addToPlayListButton->setIconSize(QSize(32,32));
 
     ui->m_removeFromPlaylist->setIcon(QIcon("../QtGstMediaPlayer/icons/minus.png"));
-//    ui->m_removeFromPlaylist->setIconSize(QSize(32,32));
 
     ui->m_moveUpInPlaylist->setIcon(QIcon("../QtGstMediaPlayer/icons/up.png"));
-//    ui->m_moveUpInPlaylist->setIconSize(QSize(32,32));
 
     ui->m_moveDownInPlaylist->setIcon(QIcon("../QtGstMediaPlayer/icons/down.png"));
-//    ui->m_moveDownInPlaylist->setIconSize(QSize(32,32));
+    ui->m_increaseRateButton->setVisible(false);
+    ui->m_decreaseRateButton->setVisible(false);
 
 
     m_playListModel = new PlayListModel(this);
@@ -343,9 +344,49 @@ void MainWindow::playSelectedFile(QModelIndex index) {
     if (!filepath.isEmpty()) {
         openFile(filepath);
         ui->m_filetypeLabel->setText(filepath.right(3).toUpper());
+        m_playingFileidx = idx;
     }
 }
 
+void MainWindow::playNextFile()
+{
+    int current = m_playingFileidx+1;
+    if(current < m_playListModel->getMap().size()) {
+        PlayListElement sss = m_playListModel->getElement(current);
+        QString filepath = sss.path();
+        if (!filepath.isEmpty()) {
+            openFile(filepath);
+            ui->m_filetypeLabel->setText(filepath.right(3).toUpper());
+            m_playingFileidx = current;
+            QModelIndex index = m_playListModel->index(current);
+//            QModelIndex index = m_playListModel->createIndex( current, 1);
+            if ( index.isValid() ) {
+                ui->m_playListView->selectionModel()->clear();
+                ui->m_playListView->selectionModel()->select(index, QItemSelectionModel::Select);
+            }
+        }
+    }
+}
+
+void MainWindow::playPreviousFile()
+{
+    int current = m_playingFileidx-1;
+    if((current) >= 0) {
+        PlayListElement sss = m_playListModel->getElement(current);
+        QString filepath = sss.path();
+        if (!filepath.isEmpty()) {
+            openFile(filepath);
+            ui->m_filetypeLabel->setText(filepath.right(3).toUpper());
+            m_playingFileidx = current;
+            QModelIndex index = m_playListModel->index(current);
+//            QModelIndex index = m_playListModel->createIndex( current, 1);
+            if ( index.isValid() ) {
+                ui->m_playListView->selectionModel()->clear();
+                ui->m_playListView->selectionModel()->select(index, QItemSelectionModel::Select);
+            }
+        }
+    }
+}
 
 
 

@@ -38,9 +38,15 @@ void PlayListModel::addElement(QFileInfo qfi)
     }
 }
 
-PlayListElement PlayListModel::getElement(int idx) {
+PlayListElement PlayListModel::getElement(int idx)
+{
     QString fileName =  stringList().at(idx);
     PlayListElement element = m_pathToFileNameMap.value(fileName);
     return element;
+}
+
+QHash<QString, PlayListElement> PlayListModel::getMap()
+{
+    return m_pathToFileNameMap;
 }
 
