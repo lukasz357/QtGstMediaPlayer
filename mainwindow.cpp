@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "player.h"
 #include "ui_mainwindow.h"
+#include "playlistmodel.h"
 #include <QBoxLayout>
 #include <QFileDialog>
 #include <QToolButton>
@@ -27,6 +28,8 @@ MainWindow::MainWindow(QWidget *parent) :
     fileSystemModel = new QFileSystemModel(this);
     fileSystemModel->setRootPath(m_baseDir);
 
+    fileInfoList = new QFileInfoList();
+
     QStringList sDriveFilters;
     sDriveFilters << "*.aac" << "*.wmv" << "*.avi" << "*.mpeg" << "*.mov" << "*.3gp" << "*.flv" << "*.mp3" << "*.mp4" ;
 
@@ -36,7 +39,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->treeView->setModel(fileSystemModel);
     ui->treeView->setRootIndex(fileSystemModel->index(m_baseDir));
 
-    connect(ui->treeView, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(slotCustomContextMenu(const QPoint &)));
+    connect(ui->treeView, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(showContextMenu(const QPoint &)));
 
     ui->gridLayout_2->setMargin(5);
     ui->gridLayout->setMargin(5);
@@ -106,26 +109,26 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
     //TEMPORARY
-    QStringListModel *playListModel = new QStringListModel(this);
-    QStringList List;
-        List << "1.  Right Next Door To Hell"
-             << "2.  Dust 'N' Bones"
-             << "3.  Live And Let Die"
-             << "4.  Don't Cry"
-             << "5.  Perfect Crime"
-             << "6.  You Ain't The First"
-             << "7.  Bad Obsession"
-             << "8.  Back Off Bitch"
-             << "9.  Double Talkin' Jive"
-             << "10. November Rain"
-             << "11. The Garden"
-             << "12. Garden Of Eden"
-             << "13. Don't Damn Me"
-             << "14. Bad Apples"
-             << "15. Dead Horse"
-             << "16. Coma";
-    playListModel->setStringList(List);
-    ui->m_playListView->setModel(playListModel);
+    m_playListModel = new PlayListModel(this);
+//    QStringList List;
+//        List << "1.  Right Next Door To Hell"
+//             << "2.  Dust 'N' Bones"
+//             << "3.  Live And Let Die"
+//             << "4.  Don't Cry"
+//             << "5.  Perfect Crime"
+//             << "6.  You Ain't The First"
+//             << "7.  Bad Obsession"
+//             << "8.  Back Off Bitch"
+//             << "9.  Double Talkin' Jive"
+//             << "10. November Rain"
+//             << "11. The Garden"
+//             << "12. Garden Of Eden"
+//             << "13. Don't Damn Me"
+//             << "14. Bad Apples"
+//             << "15. Dead Horse"
+//             << "16. Coma";
+//    m_playListModel->setStringList(List);
+    ui->m_playListView->setModel(m_playListModel);
 
     onStateChanged();
 
@@ -135,6 +138,8 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
+    delete fileSystemModel;
+    delete fileInfoList;
 }
 void MainWindow::openFile(const QString & fileName)
 {
@@ -298,14 +303,53 @@ void MainWindow::mouseMoveEvent(QMouseEvent *event)
     }
 }
 
-void MainWindow::slotCustomContextMenu(const QPoint &point)
+void MainWindow::showContextMenu(const QPoint &point)
 {
-    //QStandardItem *item = ui->treeView->model()->itemData()->itemFromIndex(indexAt(point));
+    QTreeView* view = ui->treeView;
+    QModelIndex index = view->currentIndex();
+    fileInfoList->clear();
+    QFileInfo selected = fileSystemModel->fileInfo(index);
 
-//    if(item && item->data(Qt::UserRole+1).toString() == "Category"){
-//        QMenu *menu = new QMenu;
-//        menu->addAction(QString("Import"), menu, SLOT(slotImport()));
-//        menu->addAction(QString("Export"), menu, SLOT(slotExport()));
-//        menu->exec(QCursor::pos());
-//    }
+    getAllFilesUnderSelected(selected, *fileInfoList);
+
+    QMenu *menu = new QMenu(view);
+    menu->addAction(QString("Add to library"), this, SLOT(addMediaFilesToLibrary()));
+
+    menu->exec(QCursor::pos());
+
 }
+
+void MainWindow::getAllFilesUnderSelected(QFileInfo selected, QFileInfoList & fList)
+{
+    QStringList filters;
+    filters << "aac" << "wmv" << "avi" << "mpeg" << "mov" << "3gp" << "flv" << "mp3" << "mp4" ;
+
+    if(selected.isFile())
+        fList.append(selected);
+    else {
+        QDir root(selected.absoluteFilePath());
+        QFileInfoList tmp = root.entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot, QDir::DirsFirst);
+        for(int i = 0; i < tmp.size(); i++) {
+            if(tmp.at(i).isDir())
+                getAllFilesUnderSelected(tmp.at(i).absoluteFilePath(), fList);
+            else {
+                QString extension = tmp.at(i).suffix();
+                if(filters.contains(extension))
+                    fList.append(tmp.at(i));
+            }
+        }
+    }
+}
+
+void MainWindow::addMediaFilesToLibrary()
+{
+    for(int i = 0; i < fileInfoList->size(); i++) {
+//        qDebug() << fileInfoList->at(i).absoluteFilePath();
+        m_playListModel->addElement(fileInfoList->at(i));
+    }
+
+}
+
+
+
+

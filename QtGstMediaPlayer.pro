@@ -27,10 +27,14 @@ DEFINES += QT_NO_EMIT
 
 SOURCES += main.cpp\
            mainwindow.cpp \
-           player.cpp
+           player.cpp \
+    playlistmodel.cpp \
+    playlistelement.cpp
 
 HEADERS  += mainwindow.h \
-            player.h
+            player.h \
+    playlistmodel.h \
+    playlistelement.h
 
 FORMS    += mainwindow.ui
 message($$OUT_PWD)

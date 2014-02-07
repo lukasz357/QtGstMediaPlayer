@@ -6,8 +6,10 @@
 #include <QWidget>
 #include <QStyle>
 #include <QFileSystemModel>
+#include "playlistmodel.h"
 
 class Player;
+class PlayListModel;
 
 namespace Ui {
 class MainWindow;
@@ -31,20 +33,24 @@ private slots:
     void onPositionChanged();
 
     void setPosition(int position);
-    void slotCustomContextMenu(const QPoint &point);
     void onMetaChanged();
     void onVolumeToggled();
+    void showContextMenu(const QPoint &);
+    void addMediaFilesToLibrary();
 
 private:
     Ui::MainWindow *ui;
     QString m_baseDir;
     QFileSystemModel *fileSystemModel;
+    QFileInfoList *fileInfoList;
     QTimer m_fullScreenTimer;
+        PlayListModel *m_playListModel;
 
     void open();
     void openFile(const QString & fileName);
     void toggleFullScreen();
     void showControls(bool show = true);
+    void getAllFilesUnderSelected(QFileInfo selected, QFileInfoList & fList);
 protected:
     void mouseMoveEvent(QMouseEvent *event);
 };
