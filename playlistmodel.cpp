@@ -27,7 +27,7 @@ void PlayListModel::addElement(QFileInfo qfi)
     if(!m_pathToFileNameMap.contains(qfi.absoluteFilePath())) {
         PlayListElement el(qfi.fileName());
         el.setPath(qfi.absoluteFilePath());
-        m_pathToFileNameMap.insert(qfi.absoluteFilePath(), el);
+        m_pathToFileNameMap.insert(qfi.fileName(), el);
         QList<PlayListElement> values = m_pathToFileNameMap.values();
         QStringList qstringList;
         foreach(PlayListElement item, values) {
@@ -37,3 +37,10 @@ void PlayListModel::addElement(QFileInfo qfi)
         QStringListModel::setStringList(qstringList);
     }
 }
+
+PlayListElement PlayListModel::getElement(int idx) {
+    QString fileName =  stringList().at(idx);
+    PlayListElement element = m_pathToFileNameMap.value(fileName);
+    return element;
+}
+

@@ -15,6 +15,8 @@ public:
     void setFileInfoList(QFileInfoList &fileInfoList);
 
     void addElement(QFileInfo qfi);
+
+    PlayListElement getElement(int idx);
     
 signals:
     

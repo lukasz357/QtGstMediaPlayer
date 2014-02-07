@@ -37,6 +37,7 @@ private slots:
     void onVolumeToggled();
     void showContextMenu(const QPoint &);
     void addMediaFilesToLibrary();
+    void playSelectedFile(QModelIndex);
 
 private:
     Ui::MainWindow *ui;
@@ -44,7 +45,7 @@ private:
     QFileSystemModel *fileSystemModel;
     QFileInfoList *fileInfoList;
     QTimer m_fullScreenTimer;
-        PlayListModel *m_playListModel;
+    PlayListModel *m_playListModel;
 
     void open();
     void openFile(const QString & fileName);

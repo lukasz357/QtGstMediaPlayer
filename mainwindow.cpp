@@ -41,6 +41,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->treeView->hideColumn(1);ui->treeView->hideColumn(2);ui->treeView->hideColumn(3);
 
     connect(ui->treeView, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(showContextMenu(const QPoint &)));
+    connect(ui->m_playListView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(playSelectedFile(QModelIndex)));
 
     ui->gridLayout_2->setMargin(5);
     ui->gridLayout->setMargin(5);
@@ -111,6 +112,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     m_playListModel = new PlayListModel(this);
     ui->m_playListView->setModel(m_playListModel);
+    ui->m_playListView->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
     onStateChanged();
 
@@ -330,6 +332,18 @@ void MainWindow::addMediaFilesToLibrary()
         m_playListModel->addElement(fileInfoList->at(i));
     }
 
+}
+
+void MainWindow::playSelectedFile(QModelIndex index) {
+    QListView* view = ui->m_playListView;
+    int idx = view->currentIndex().row();
+    QStringList test = m_playListModel->stringList();
+    PlayListElement sss = m_playListModel->getElement(idx);
+    QString filepath = sss.path();
+    if (!filepath.isEmpty()) {
+        openFile(filepath);
+        ui->m_filetypeLabel->setText(filepath.right(3).toUpper());
+    }
 }
 
 

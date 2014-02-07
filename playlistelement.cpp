@@ -4,6 +4,7 @@ PlayListElement::PlayListElement(const QString& other = QString()) : QString(oth
 {
 }
 
+PlayListElement::PlayListElement(): QString(){}
 void PlayListElement::setPath(const QString &path)
 {
     m_path = path;

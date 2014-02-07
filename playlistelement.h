@@ -8,6 +8,7 @@ class PlayListElement : public QString
 
 public:
     PlayListElement(const QString & path);
+    PlayListElement();
 
     void setPath(const QString & path);
     QString path();
