@@ -38,6 +38,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->treeView->setModel(fileSystemModel);
     ui->treeView->setRootIndex(fileSystemModel->index(m_baseDir));
+    ui->treeView->hideColumn(1);ui->treeView->hideColumn(2);ui->treeView->hideColumn(3);
 
     connect(ui->treeView, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(showContextMenu(const QPoint &)));
 
@@ -108,26 +109,7 @@ MainWindow::MainWindow(QWidget *parent) :
 //    ui->m_moveDownInPlaylist->setIconSize(QSize(32,32));
 
 
-    //TEMPORARY
     m_playListModel = new PlayListModel(this);
-//    QStringList List;
-//        List << "1.  Right Next Door To Hell"
-//             << "2.  Dust 'N' Bones"
-//             << "3.  Live And Let Die"
-//             << "4.  Don't Cry"
-//             << "5.  Perfect Crime"
-//             << "6.  You Ain't The First"
-//             << "7.  Bad Obsession"
-//             << "8.  Back Off Bitch"
-//             << "9.  Double Talkin' Jive"
-//             << "10. November Rain"
-//             << "11. The Garden"
-//             << "12. Garden Of Eden"
-//             << "13. Don't Damn Me"
-//             << "14. Bad Apples"
-//             << "15. Dead Horse"
-//             << "16. Coma";
-//    m_playListModel->setStringList(List);
     ui->m_playListView->setModel(m_playListModel);
 
     onStateChanged();
